@@ -9,6 +9,10 @@ module.exports = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  plugins: [
+	// ...
+	require('@tailwindcss/forms'),
+  ],
   theme: {
   	extend: {
   		borderRadius: {

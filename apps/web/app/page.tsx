@@ -5,8 +5,8 @@ import { Landing } from "../screens/Landing";
 export default function Home() {
   return (
    <div >
-      {/* <Landing/> */}
-      <Example></Example>
+      <Landing/>
+      {/* <Example></Example> */}
    </div>
   );
 }

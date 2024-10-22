@@ -14,7 +14,110 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id            String  @id @default(cuid())
+  name          String
+  email         String?     @unique
+  emailVerified DateTime?
+  phoneNo       String?      @unique
+  profilePic    String?     // Optional field
+  skills        String[]    // Array of skills (can use PostgreSQL array type)
+  summary       String?
+  certifications String[]   
+  awards        String[]    
+  publications  String[]    
+  experiences   Json? 
+  interviews    Interview[]  // Relation to interviews
+  credits       Credits[] 
+  metrics       Metrics[]     // Relation to user credits
+  accounts       Account[]
+  sessions       Session[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([email, phoneNo]) // Add index to make queries faster
+}
+
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String     // Change this from String to Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  // Optional field if provider gives refresh token
+  access_token      String?  // Optional field if provider gives access token
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String    @unique
+  expires    DateTime
+}
+// model Experience {
+//   id          Int      @id @default(autoincrement())
+//   user        User     @relation(fields: [userId], references: [id])
+//   userId      Int
+//   role        String
+//   company     String
+//   duration    String // Duration of the role (you may want to make this more structured if needed)
+//   description String?
+//   createdAt   DateTime @default(now())
+
+//   @@index([userId])
+// }
+
+model Credits {
+  id            String  @id @default(cuid())
+  currentMinutes  Float    @default(0.0)  // Current minutes the user has left
+  usedMinutes     Float    @default(0.0)  // Total minutes used by the user
+  totalMinutes    Float    @default(0.0)  // Total minutes available (current + used)
+  totalAmountPaid Float    @default(0.0)  // Total amount of money paid for credits
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Interview {
+  id            String  @id @default(cuid())
+  user               User     @relation(fields: [userId], references: [id])
+  userId             String
+  assistantId        Int?     // Optional, if you have different AI interviewers
+  messages           Json     // JSON to store chat or message objects
+  status             String   // Could be enums: "ongoing", "completed", "cancelled", etc.
+  endedReason        String?  // Reason for ending (optional)
+  createdAt          DateTime @default(now())
+  endedAt            DateTime?
+  cost               Float    @default(0.0)
+  transcript         String?  // Optional field for storing interview transcript
+  stereoRecordingUrl String?  // Optional field for recording URL
+  costs              Json?    // In case you have detailed cost breakdown (optional)
+
+  @@index([userId, assistantId])
+}
+
+model Metrics {
+  id            String  @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String      @unique
+  key       String   // Metric key, like "interview_count", "feedback_score"
+  value     Float    // Value of the metric
+  createdAt DateTime @default(now())
+
+  @@index([userId, key])
 }

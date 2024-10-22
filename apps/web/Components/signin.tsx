@@ -1,104 +1,120 @@
-"use client";
+"use client"
 import { signIn, useSession } from "next-auth/react";
-import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-// import Image from "next/image";
-import { Separator } from "../Components/ui/separator";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
-const Signin = () => {
+export default function signin() {
   const session = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const redirected = useRef(false);
+
   useEffect(() => {
     if (redirected.current === false && session.data?.user) {
-      const redirectUrl = localStorage.getItem("loginRedirectUrl") || searchParams.get("redirectUrl");
+      const redirectUrl =
+        localStorage.getItem("loginRedirectUrl") ||
+        searchParams.get("redirectUrl");
       localStorage.removeItem("loginRedirectUrl");
       router.replace(redirectUrl || "/");
       redirected.current = true;
     }
   }, [redirected, session, router]);
-
   return (
-    <div className="flex flex-center h-screen">
-      <motion.div
-        initial={{ y: -40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeInOut", type: "spring", damping: 10 }}
-        className="flex flex-col gap-12 justify-between bg-primary/5 p-8 rounded-2xl border border-primary/10 shadow-xl shadow-primary/5 min-w-[30vw]"
-      >
-        <div className="flex flex-col gap-12">
-          <div className="flex flex-col text-center">
-            <h2 className="font-semibold text-3xl md:text-4xl tracking-tighter">
-              Welcome to{" "}
-              <span className="font-bold bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text text-transparent tracking-tighter">
-                100xProjects
-              </span>
-            </h2>
-            <p className="text-primary/75 font-medium tracking-tighter text-lg md:text-xl">
-              Log in to access paid content!
-            </p>
-          </div>
-          <div className="flex flex-col gap-4">
-            <div
-              className="w-full flex gap-2 p-4 font-medium md:text-lg rounded-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer bg-gradient-to-b from-blue-400 to-blue-700 text-white justify-center items-center"
-              onClick={async () => {
-                await signIn("google");
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 30 30"
-                fill="currentColor"
-                className="size-6 md:size-8 text-white"
-              >
-                <path d="M 15.003906 3 C 8.3749062 3 3 8.373 3 15 C 3 21.627 8.3749062 27 15.003906 27 C 25.013906 27 27.269078 17.707 26.330078 13 L 25 13 L 22.732422 13 L 15 13 L 15 17 L 22.738281 17 C 21.848702 20.448251 18.725955 23 15 23 C 10.582 23 7 19.418 7 15 C 7 10.582 10.582 7 15 7 C 17.009 7 18.839141 7.74575 20.244141 8.96875 L 23.085938 6.1289062 C 20.951937 4.1849063 18.116906 3 15.003906 3 z"></path>
-              </svg>
-              Continue with Google
-            </div>
-            <div
-              className="w-full flex gap-2 p-4 font-medium md:text-lg rounded-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer bg-gradient-to-b from-blue-400 to-blue-700 text-white justify-center items-center"
-              onClick={async () => {
-                await signIn("github");
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 30 30"
-                fill="currentColor"
-                className="size-6 md:size-8 text-white"
-              >
-                <path d="M15,3C8.373,3,3,8.373,3,15c0,5.623,3.872,10.328,9.092,11.63C12.036,26.468,12,26.28,12,26.047v-2.051 c-0.487,0-1.303,0-1.508,0c-0.821,0-1.551-0.353-1.905-1.009c-0.393-0.729-0.461-1.844-1.435-2.526 c-0.289-0.227-0.069-0.486,0.264-0.451c0.615,0.174,1.125,0.596,1.605,1.222c0.478,0.627,0.703,0.769,1.596,0.769 c0.433,0,1.081-0.025,1.691-0.121c0.328-0.833,0.895-1.6,1.588-1.962c-3.996-0.411-5.903-2.399-5.903-5.098 c0-1.162,0.495-2.286,1.336-3.233C9.053,10.647,8.706,8.73,9.435,8c1.798,0,2.885,1.166,3.146,1.481C13.477,9.174,14.461,9,15.495,9 c1.036,0,2.024,0.174,2.922,0.483C18.675,9.17,19.763,8,21.565,8c0.732,0.731,0.381,2.656,0.102,3.594 c0.836,0.945,1.328,2.066,1.328,3.226c0,2.697-1.904,4.684-5.894,5.097C18.199,20.49,19,22.1,19,23.313v2.734 c0,0.104-0.023,0.179-0.035,0.268C23.641,24.676,27,20.236,27,15C27,8.373,21.627,3,15,3z"></path>
-              </svg>
-              Continue with Github
-            </div>
-          </div>
+    <>
+      <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <img
+            alt="Your Company"
+            src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+            className="mx-auto h-10 w-auto"
+          />
+          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            Sign in to your account
+          </h2>
         </div>
 
-        <div className="flex flex-col gap-2 w-full">
-          <Separator className="w-full my-2" />
-          <Link href={"/"} className="flex items-center gap-2 cursor-pointer mx-auto">
-            <img
-              src={"https://appx-wsb-gcp.akamai.net.in/subject/2023-01-17-0.17044360120951185.jpg"}
-              alt="Logo"
-              width={300}
-              height={200}
-              className="rounded-full size-16"
-            />
-            <div className="flex flex-col">
-              <span className="font-bold bg-gradient-to-b from-blue-400 to-blue-700 bg-clip-text text-transparent text-4xl tracking-tighter">
-                100xDevs
-              </span>
-              <p className="text-primary tracking-tight text-lg leading-none">because 10x ain't enough.</p>
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+          <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+            <div>
+              <div className="mt-6 grid grid-row gap-4">
+                <button
+                  onClick={async () => {
+                    await signIn("google");
+                  }}
+                >
+                  <a
+                    href="#"
+                    className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="h-5 w-5"
+                    >
+                      <path
+                        d="M12.0003 4.75C13.7703 4.75 15.3553 5.36002 16.6053 6.54998L20.0303 3.125C17.9502 1.19 15.2353 0 12.0003 0C7.31028 0 3.25527 2.69 1.28027 6.60998L5.27028 9.70498C6.21525 6.86002 8.87028 4.75 12.0003 4.75Z"
+                        fill="#EA4335"
+                      />
+                      <path
+                        d="M23.49 12.275C23.49 11.49 23.415 10.73 23.3 10H12V14.51H18.47C18.18 15.99 17.34 17.25 16.08 18.1L19.945 21.1C22.2 19.01 23.49 15.92 23.49 12.275Z"
+                        fill="#4285F4"
+                      />
+                      <path
+                        d="M5.26498 14.2949C5.02498 13.5699 4.88501 12.7999 4.88501 11.9999C4.88501 11.1999 5.01998 10.4299 5.26498 9.7049L1.275 6.60986C0.46 8.22986 0 10.0599 0 11.9999C0 13.9399 0.46 15.7699 1.28 17.3899L5.26498 14.2949Z"
+                        fill="#FBBC05"
+                      />
+                      <path
+                        d="M12.0004 24.0001C15.2404 24.0001 17.9654 22.935 19.9454 21.095L16.0804 18.095C15.0054 18.82 13.6204 19.245 12.0004 19.245C8.8704 19.245 6.21537 17.135 5.2654 14.29L1.27539 17.385C3.25539 21.31 7.3104 24.0001 12.0004 24.0001Z"
+                        fill="#34A853"
+                      />
+                    </svg>
+                    <span className="text-sm font-semibold leading-6">
+                      Google
+                    </span>
+                  </a>
+                </button>
+                <button
+                  onClick={async () => {
+                    await signIn("github");
+                  }}
+                >
+                  <a
+                    href="#"
+                    className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
+                  >
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      aria-hidden="true"
+                      className="h-5 w-5 fill-[#24292F]"
+                    >
+                      <path
+                        d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z"
+                        clipRule="evenodd"
+                        fillRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-sm font-semibold leading-6">
+                      GitHub
+                    </span>
+                  </a>
+                </button>
+              </div>
             </div>
-          </Link>
+          </div>
+
+          <p className="mt-10 text-center text-sm text-gray-500">
+            Not a member?{" "}
+            <a
+              href="#"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            >
+              Start a 14 day free trial
+            </a>
+          </p>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </>
   );
-};
-
-export default Signin;
+}

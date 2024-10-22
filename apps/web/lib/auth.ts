@@ -6,7 +6,7 @@ import type { Adapter } from "next-auth/adapters";
 import { SessionStrategy } from "next-auth";
 
 export const authOptions = {
-//   adapter: PrismaAdapter(db) as Adapter,
+  // adapter: PrismaAdapter(db) as Adapter,
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID || "",
@@ -25,7 +25,44 @@ export const authOptions = {
   },
   session: { strategy: "jwt" as SessionStrategy },
   callbacks: {
-    async jwt({ token }: any) {
+    async jwt({ token, user }: any) {
+      // If the user is authenticated, check if they exist in the database
+      if (user) {
+        const existingUser = await db.user.findUnique({
+          where: { id: user.id },
+        });
+
+        // If the user doesn't exist, create a new one
+        // if (!existingUser) {
+        //   await db.user.create({
+        //     data: {
+        //       id: user.id,
+        //       email: user.email,
+        //       name: user.name,
+        //     },
+        //   });
+        // }
+
+        if (!existingUser) {
+          await db.user.create({
+            data: {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              // Create associated Credits
+              credits: {
+                create: {
+                  id: user.id, // Use the user's ID or a new unique ID for the Credits record
+                  currentMinutes: 0,
+                  usedMinutes: 0,
+                  totalMinutes: 0,
+                  totalAmountPaid: 0,
+                },
+              },
+            },
+          });
+        }
+      }
       return token;
     },
     async session({ session, token }: any) {

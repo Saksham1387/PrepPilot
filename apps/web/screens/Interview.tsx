@@ -1,7 +1,9 @@
-export function Interview(){
+import Interview from "@/components/interview";
+
+export function Interview1(){
     return(
         <div>
-            Main interiew page
+            <Interview></Interview>
         </div>
     )
 }

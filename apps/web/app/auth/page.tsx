@@ -1,9 +1,8 @@
 import { Suspense } from "react";
-import Signin from "../../Components/signin";
-import Example from "@/components/signin1";
+import Signin from "@/components/signin";
 
 const SigninPage = async () => {
-  return <Suspense> <Example /> </Suspense>;
+  return <Suspense> <Signin /> </Suspense>;
 };
 
 export default SigninPage;
